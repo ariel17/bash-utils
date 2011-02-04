@@ -41,24 +41,23 @@ for host in $HOSTS; do
         CONN="$CONN -p$PASSWORD"
     fi;
 
-    # Will create a subdirectory per host in DEST, if it can.
-    if [ ! -e $DEST/$host ]; then                                                                               
-        echo ${checkdir[$host]}; 
-        echo "/bin/mkdir $DEST/$host;" >> $COMMAND;
-        DESTDUMP=$DEST/$host;
-    elif [ -d $DEST/$host ]; then
-        DESTDUMP=$DEST/$host;
-    else
-        echo "# Cannot create $DEST/$host because already exist and it is not a directory." >> $COMMAND;
-        DESTDUMP=$DEST;
-    fi;
+    # # Will create a subdirectory per host in DEST, if it can.
+    # if [ ! -e $DEST/$host ]; then                                                                               
+    #     echo "/bin/mkdir $DEST/$host;" >> $COMMAND;
+    #     DESTDUMP=$DEST/$host;
+    # elif [ -d $DEST/$host ]; then
+    #     DESTDUMP=$DEST/$host;
+    # else
+    #     echo "# Cannot create $DEST/$host because already exist and it is not a directory." >> $COMMAND;
+    #     DESTDUMP=$DEST;
+    # fi;
 
     # Itering over 'show databases()' result.
     for db in `$MYSQLSHOW $CONN | /usr/bin/awk '{ print $2 }'`; do
         must_ignore=0
         for ignore in $IGNORE; do
-            typeset -l test_ignore=$ignore;
-            typeset -l test_db=$db;
+            test_ignore=`echo $ignore | /usr/bin/awk '{ print tolower($0) }'`;
+            test_db=`echo $db| /usr/bin/awk '{ print tolower($0) }'`;
             if [ $test_ignore == $test_db ]; then
                 must_ignore=1;
                 break;
@@ -70,12 +69,15 @@ for host in $HOSTS; do
             continue;
         fi;
 
-        echo "$MYSQLDUMP $CONN $db > $DESTDUMP/$db@$host-$DATE.sql;" >> $COMMAND;
+        echo "echo 'Dumping $db@$host...';" >> $COMMAND;
+        # echo "$MYSQLDUMP $CONN $db > $DESTDUMP/$db@$host-$DATE.sql;" >> $COMMAND;
+        echo "$MYSQLDUMP $CONN $db > $DEST/$db@$host-$DATE.sql;" >> $COMMAND;
+        echo "echo 'Done.';" >> $COMMAND;
 
     done;
 done;
 
-echo "Done. Now executing...";
+echo "Done. Now executing:";
 
 if [ ! -e $COMMAND ]; then
     echo "** Collector file does not exist. Abort.";
@@ -85,12 +87,10 @@ fi;
 /bin/chmod +x $COMMAND;
 $COMMAND;
 
-echo "Done. Now compresing...";
+echo "Done. Now compressing all files...";
 
 # Compress all resulting files.
-for dumpfile in `/usr/bin/find $DEST -name '*$DATE.sql' -print;`; do
-    /bin/gzip $dumpfile;
-done;    
+/bin/gzip $DEST/*.sql;
 
 echo "Done.";
 echo ">> Finished.";
