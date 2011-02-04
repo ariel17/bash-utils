@@ -1,11 +1,12 @@
 #!/bin/bash
 
 #
-# This is a simple backup script that generates another script that really 
-# makes the dump for each MySQL server specified. Uses mysqlshow to list all 
-# databases managed and mysqldump to transfer the content into a file.
+# This is a simple backup script to generate another one that helps making the 
+# real work dumping the content of each valid database (by name) on each MySQL 
+# server specified. Uses mysqlshow to list all existent databases and mysqldump
+# to transfer the content into a file.
 # The only restriction on this application is there must be the same user and
-# password for logon to each sever.
+# password for login on each sever.
 #
 
 MYSQL=/usr/bin/mysql
