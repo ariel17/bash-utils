@@ -6,7 +6,8 @@
 # server specified. Uses mysqlshow to list all existent databases and mysqldump
 # to transfer the content into a file.
 # The only restriction on this application is there must exists the same user 
-# and password for login on each sever and at least must have SELECT grant.
+# and password for login on each sever and at least must have SELECT and 
+# PROCESS privileges.
 #
 
 MYSQL=/usr/bin/mysql
@@ -25,7 +26,7 @@ test
 information_schema"
 
 function log {
-    echo `/bin/date` $1
+    echo `/bin/date` $1;
 }
 
 log ">> Simple MySQL Backup initialized.";
