@@ -6,8 +6,8 @@
 # server specified. Uses mysqlshow to list all existent databases and mysqldump
 # to transfer the content into a file.
 # The only restriction on this application is there must exists the same user 
-# and password for login on each sever and at least must have SELECT and 
-# PROCESS privileges.
+# and password for login on each sever and at least must have SELECT, LOCK 
+# TABLES and SHOW VIEW privileges.
 #
 
 MYSQL=/usr/bin/mysql
