@@ -24,14 +24,18 @@ temp
 test
 information_schema"
 
-echo ">> Simple MySQL Backup initialized.";
+function log {
+    echo `/bin/date` $1
+}
+
+log ">> Simple MySQL Backup initialized.";
 
 if [ -e $COMMAND ]; then
     /bin/rm $COMMAND;
-    echo "Removed old collector script.";
+    log "Removed old collector script.";
 fi;    
 
-echo "Making a new collector script...";
+log "Making a new collector script...";
 for host in $HOSTS; do
     # Creates the connection string
     CONN="-u $USERNAME -h $host"
@@ -43,12 +47,12 @@ for host in $HOSTS; do
 
     # # Will create a subdirectory per host in DEST, if it can.
     # if [ ! -e $DEST/$host ]; then                                                                               
-    #     echo "/bin/mkdir $DEST/$host;" >> $COMMAND;
+    #     log "/bin/mkdir $DEST/$host;" >> $COMMAND;
     #     DESTDUMP=$DEST/$host;
     # elif [ -d $DEST/$host ]; then
     #     DESTDUMP=$DEST/$host;
     # else
-    #     echo "# Cannot create $DEST/$host because already exist and it is not a directory." >> $COMMAND;
+    #     log "# Cannot create $DEST/$host because already exist and it is not a directory." >> $COMMAND;
     #     DESTDUMP=$DEST;
     # fi;
 
@@ -69,30 +73,30 @@ for host in $HOSTS; do
             continue;
         fi;
 
-        echo "echo 'Dumping $db@$host...';" >> $COMMAND;
-        # echo "$MYSQLDUMP $CONN $db > $DESTDUMP/$db@$host-$DATE.sql;" >> $COMMAND;
-        echo "$MYSQLDUMP $CONN $db > $DEST/$db@$host-$DATE.sql;" >> $COMMAND;
-        echo "echo 'Done.';" >> $COMMAND;
+        log "echo 'Dumping $db@$host...';" >> $COMMAND;
+        # log "$MYSQLDUMP $CONN $db > $DESTDUMP/$db@$host-$DATE.sql;" >> $COMMAND;
+        log "$MYSQLDUMP $CONN $db > $DEST/$db@$host-$DATE.sql;" >> $COMMAND;
+        log "echo 'Done.';" >> $COMMAND;
 
     done;
 done;
 
-echo "Done. Now executing:";
+log "Done. Now executing:";
 
 if [ ! -e $COMMAND ]; then
-    echo "** Collector file does not exist. Abort.";
+    log "** Collector file does not exist. Abort.";
     exit 1;
 fi;
 
 /bin/chmod +x $COMMAND;
 $COMMAND;
 
-echo "Done. Now compressing all files...";
+log "Done. Now compressing all files...";
 
 # Compress all resulting files.
 /bin/gzip $DEST/*.sql;
 
-echo "Done.";
-echo ">> Finished.";
+log "Done.";
+log ">> Finished.";
 
 exit 0
