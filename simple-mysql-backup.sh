@@ -74,10 +74,10 @@ for host in $HOSTS; do
             continue;
         fi;
 
-        echo "echo 'Dumping $db@$host...';" >> $COMMAND;
+        echo "echo `/bin/date` 'Dumping $db@$host...';" >> $COMMAND;
         # echo "$MYSQLDUMP $CONN $db > $DESTDUMP/$db@$host-$DATE.sql;" >> $COMMAND;
         echo "$MYSQLDUMP $CONN $db > $DEST/$db@$host-$DATE.sql;" >> $COMMAND;
-        echo "echo 'Done.';" >> $COMMAND;
+        echo "echo `/bin/date` 'Done.';" >> $COMMAND;
 
     done;
 done;
