@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # Basic firewall for a single machine using iptables.
+# Source: http://www.pizon.org/articles/building-a-linux-firewall-with-iptables.html
 
 IT=/sbin/iptables # binary
 
