@@ -1,29 +1,31 @@
-#!/bin/bash
+#!/bin/sh
 
-IT=/sbin/iptables #iptables binary
-WAN=eth0 # wan interface
+IT=/sbin/iptables # binary
+IP=127.0.0.1 # this machine ip
+
+echo -n "Applying firewall politics... "
 
 # flush existent rules
 
-$IT -F INPUT 
-$IT -F OUTPUT
-$IT -F FORWARD
+$IT --flush
 
-# enabling outgoing HTTP traffic
+# default polices (deny-by-default)
 
-$IP -A OUTPUT -p tcp -i $WAN --dport www -j ACCEPT
+$IT --policy INPUT DROP
+$IT --policy OUTPUT DROP
+$IT --policy FORWARD DROP
 
-# enabling outgoing SSH traffic
+# enable loopback traffic
 
-# enabling all localhost traffic
+$IT --append INPUT -i lo -j ACCEPT
+$IT --append OUTPUT -o lo -j ACCEPT
 
-$IP -A INPUT -i lo -j ACCEPT
-$IP -A OUTPUT -i lo -j ACCEPT
-$IP -A FORWARD -i lo -j ACCEPT
+# allow INPUT for established connections
 
+$IT --append INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-# last rules: denny all traffic
+# allow OUTPUT for established and new connections 
 
-$IT -A INPUT -j REJECT
-$IT -A OUTPUT -j REJECT
-$IT -A FORWARD -j REJECT
+$IT --append OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+
+echo -n "Done."
