@@ -1,7 +1,8 @@
 #!/bin/sh
 
+# Basic firewall for a single machine using iptables.
+
 IT=/sbin/iptables # binary
-IP=127.0.0.1 # this machine ip
 
 echo -n "Applying firewall politics... "
 
