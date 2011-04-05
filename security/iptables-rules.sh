@@ -30,4 +30,4 @@ $IT --append INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
 $IT --append OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 
-echo -n "Done."
+echo -n "Done.\n"
