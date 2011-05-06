@@ -74,10 +74,11 @@ for host in $HOSTS; do
             continue;
         fi;
 
-        echo "echo `/bin/date` 'Dumping $db@$host...';" >> $COMMAND;
+        echo "echo `/bin/date` 'Dumping and compressing $db@$host...';" >> $COMMAND;
         # echo "$MYSQLDUMP $CONN $db > $DESTDUMP/$db@$host-$DATE.sql;" >> $COMMAND;
-        echo "$MYSQLDUMP $CONN $db > $DEST/$db@$host-$DATE.sql;" >> $COMMAND;
-        echo "echo `/bin/date` 'Done.';" >> $COMMAND;
+        SQLFILE="$DEST/$db@$host-$DATE.sql"
+        echo "$MYSQLDUMP $CONN $db > $SQLFILE && /bin/gzip $SQLFILE &" >> $COMMAND;
+        # echo "echo `/bin/date` 'Done.';" >> $COMMAND;
 
     done;
 done;
@@ -91,11 +92,6 @@ fi;
 
 /bin/chmod +x $COMMAND;
 $COMMAND;
-
-log "Done. Now compressing all files...";
-
-# Compress all resulting files.
-/bin/gzip $DEST/*.sql;
 
 log "Done.";
 log ">> Finished.";
