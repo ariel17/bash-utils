@@ -12,7 +12,7 @@
 
 MYSQL=/usr/bin/mysql
 MYSQLSHOW=/usr/bin/mysqlshow
-MYSQLDUMP="/usr/bin/mysqldump -e -q -R --compress --create-options --comments"
+MYSQLDUMP="/usr/bin/mysqldump -e -q -R --compress --create-options --comments --skip-lock-tables --single-transaction
 HOSTS="localhost
 192.168.23.1"
 USERNAME="root"
